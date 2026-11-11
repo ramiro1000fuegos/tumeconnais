@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Tu me connais ?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== Design system (identique à Jeu du chapeau) ===== */
+:root{
+  --bg:#15121B;--raised:#1E1A26;--spot:#E8A33D;--cream:#F4EEE3;--text:#F4EEE3;
+  --muted:#948C9E;--danger:#C1595A;--line:#2C2733;--ink:#15121B;
+  --display:"Fraunces",Georgia,serif;--ui:"Inter",system-ui,sans-serif;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--ui);overflow:hidden}
+button,input,textarea{font-family:inherit}
+button{cursor:pointer}
+#app,.wrap{height:100%}
+.wrap{display:flex;flex-direction:column}
+.top{flex:none;height:56px;display:flex;justify-content:flex-end;align-items:center;padding:0 12px}
+.x{width:48px;height:48px;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--muted);font-size:20px}
+.scr{flex:1;min-height:0;display:flex;flex-direction:column;padding:8px 18px 24px;text-align:center}
+.scr.center{justify-content:center}
+.scr.left{text-align:left}
+h1,h2{font-family:var(--display);margin:0 0 16px;font-size:clamp(24px,7vw,32px);line-height:1.15}
+h1{font-size:clamp(34px,10vw,48px)}
+.sub{color:var(--muted);font-size:clamp(15px,4vw,17px);line-height:1.4;margin:0 0 16px}
+.grow{flex:1}
+.btn{display:block;width:100%;border:none;border-radius:14px;padding:16px 20px;font-size:18px;font-weight:700;background:var(--cream);color:#1B140A;min-height:72px;margin:0;line-height:1.15;overflow-wrap:normal;word-break:normal;hyphens:none}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.3}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text);font-weight:600}
+.btn.danger{background:var(--danger);color:#fff}
+.stack{display:flex;flex-direction:column;gap:12px;margin-top:24px}
+.field,.fld input{width:100%;background:var(--raised);border:1px solid var(--line);border-radius:12px;color:var(--text);font-size:17px;padding:14px}
+textarea.field{resize:none;font-family:var(--display);font-size:20px}
+.bad{border-color:var(--danger)!important}
+.err{color:#E58A8B;font-size:13px;min-height:0;margin:0 0 6px 46px}
+.msg{color:#E58A8B;font-size:14px;margin:0 0 8px;min-height:18px}
+/* Couleurs */
+.swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:6px}
+.sw{aspect-ratio:1;border:none;border-radius:14px;font-size:28px;color:var(--ink)}
+.sw[aria-pressed=true]{box-shadow:0 0 0 3px var(--bg),0 0 0 6px var(--cream)}
+.sw[aria-pressed=true]::after{content:"✓"}
+/* Réponses */
+.quote{font-family:var(--display);font-size:18px;margin:0 0 12px;color:var(--cream)}
+.list{flex:1;min-height:0;overflow:auto;padding-bottom:8px}
+.fld{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.lab{flex:none;width:36px;text-align:center;font-family:var(--display);font-weight:700;font-size:22px;color:var(--spot)}
+/* Cartes */
+.cards{flex:1;min-height:0;display:grid;grid-template-rows:repeat(6,minmax(0,1fr));gap:8px;padding:0 12px}
+.card{display:grid;grid-template-columns:1fr 4fr;min-height:0;padding:0;overflow:hidden;text-align:left;background:#2D2736;color:var(--text);border:1px solid #5A5068;border-radius:12px;font-family:var(--display)}
+.card .v{display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;color:var(--muted);border-right:1px solid var(--line)}
+.card .t{display:flex;align-items:center;min-width:0;min-height:0;overflow:hidden;padding:0 10px;font-weight:600;line-height:1.1}
+.card.sel{background:#3B2F1F;box-shadow:inset 0 0 0 3px var(--spot)}
+.card.sel .v{color:var(--spot)}
+.card.done{background:#0F0D14;color:#6F6779;border:1px dashed #3A3442}
+.card.done .v{color:var(--spot);border-right:1px dashed #3A3442}
+.ctrl{flex:none;padding:12px 12px 16px}
+.ctrl p{margin:0;color:var(--muted);text-align:center;font-size:15px}
+/* Écrans couleur */
+.on-color{color:var(--ink)}
+.on-color .x{background:rgba(0,0,0,.12);border-color:rgba(0,0,0,.25);color:var(--ink)}
+.fitbox{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;text-align:center;font-family:var(--display);font-weight:700;line-height:1.1}
+.in{display:block;overflow-wrap:normal;word-break:normal;hyphens:none;max-width:100%}
+.half{flex:1;min-height:0;display:flex;padding:8px 24px 24px}
+.half+.half{border-top:2px solid rgba(0,0,0,.18)}
+.hint{margin:0;text-align:center;font-size:14px;opacity:.65}
+/* Popup */
+.ov{position:fixed;inset:0;background:rgba(10,8,14,.55);z-index:9}
+.pbox{position:absolute;left:16px;right:16px;background:var(--raised);color:var(--text);border:1px solid var(--line);border-radius:18px;padding:22px;text-align:center;overflow:hidden}
+.pbox.dn{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+.pbox.up{top:calc(24px + env(safe-area-inset-top,0px))}
+.pbox .btn+.btn{margin-top:10px}
+.pbox.auto::after{content:"";position:absolute;left:0;bottom:0;height:4px;background:var(--spot);animation:t 2s linear forwards}
+@keyframes t{from{width:100%}to{width:0}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="pop"></div>
+<script>
+const COLORS=["#FFD166","#4FD9E8","#B79CFF","#7FE8C0","#FF6F59","#F59ACB"];
+const LAB=["1","2","3","4","5","💔"];
+const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let S,cur,POK,pt;
+function reset(){S={color:null,topic:"",ans:["","","","","",""],cards:[],sel:null};cur="home"}
+
+/* ===== Écrans : chacun renvoie son HTML, un seul mécanisme de rendu ===== */
+const order=()=>{const r=[],u=[];S.cards.forEach((c,i)=>(c.done?r:u).push(i));r.sort((a,b)=>LAB.indexOf(S.cards[a].v)-LAB.indexOf(S.cards[b].v));return r.concat(u)};
+const go_=(to,label,cls="")=>`<button class="btn ${cls}" data-act="go" data-to="${to}">${label}</button>`;
+const screens={
+home:()=>`<div class="scr center"><h1>Valeurs cachées</h1><p class="sub">Six réponses, six valeurs secrètes.</p><div class="stack">${go_("color","Commencer la partie")}${go_("rules","Règles du jeu","ghost")}</div></div>`,
+rules:()=>`<div class="scr center"><h2>Règles du jeu</h2><p class="sub">Les règles seront disponibles prochainement.</p>${go_("home","Retour","ghost")}</div>`,
+color:()=>`<div class="scr"><h2>Choisissez votre couleur</h2><div class="swatches">${COLORS.map((c,i)=>`<button class="sw" style="background:${c}" data-act="pick" data-i="${i}" aria-pressed="${S.color===i}" aria-label="Couleur ${i+1}"></button>`).join("")}</div><div class="grow"></div><button class="btn" data-act="go" data-to="topic" ${S.color===null?"disabled":""}>OK</button></div>`,
+topic:()=>`<div class="scr"><h2>Écrivez un top pour une autre personne</h2><textarea id="topic" class="field" rows="3" maxlength="120" placeholder="Votre thème ou votre question…">${esc(S.topic)}</textarea><div class="grow"></div><button id="okTopic" class="btn" data-act="go" data-to="pass1" ${S.topic.trim()?"":"disabled"}>OK</button></div>`,
+pass1:()=>`<div class="scr center"><h2>Passez le téléphone à la personne qui répondra.</h2><div class="stack">${go_("answers","OK")}</div></div>`,
+answers:()=>`<div class="scr left"><h2>Écrivez vos six réponses</h2><p class="quote">« ${esc(S.topic)} »</p><div class="list">${LAB.map((l,i)=>`<div class="fld"><span class="lab">${l}</span><input data-i="${i}" maxlength="80" autocomplete="off" value="${esc(S.ans[i])}"></div><p class="err" id="e${i}"></p>`).join("")}</div><p class="msg" id="msg"></p><button class="btn" data-act="done">J'ai fini</button></div>`,
+pass2:()=>`<div class="scr center"><h2>Rendez le téléphone à la personne à qui il appartient.</h2><div class="stack">${go_("main","OK")}</div></div>`,
+main:()=>{const all=S.cards.every(c=>c.done);
+return `<p class="topic-bar">${esc(S.topic)}</p><div class="cards">${order().map(i=>{const c=S.cards[i];return `<button class="card${c.done?" done":""}${S.sel===i?" sel":""}" data-act="sel" data-i="${i}" ${c.done?"disabled":""}><span class="v">${c.done?c.v:S.sel===i?"✓":"?"}</span><span class="t" data-fit data-max="34" data-min="7"><span class="in">${esc(c.t)}</span></span></button>`}).join("")}</div><div class="ctrl">${all?"<p>Toutes les valeurs sont dévoilées.</p><button class="btn" data-act="restart">Recommencer</button>":`<button class="btn" data-act="play" ${S.sel===null?"disabled":""}>Jouer</button>`}</div>`},
+shown:()=>`<div class="scr"><div class="fitbox" data-fit data-max="72" data-min="8"><span class="in">${esc(S.cards[S.sel].t)}</span></div><p class="hint">Touchez l'écran pour dévoiler la valeur</p></div>`,
+revealed:()=>{const c=S.cards[S.sel];return `<div class="half"><div class="fitbox" data-fit data-max="56" data-min="8"><span class="in">${esc(c.t)}</span></div></div><div class="half"><div class="fitbox" data-fit data-max="260" data-min="40"><span class="in">${c.v}</span></div></div>`}
+};
+const NOX=["home","rules"],TAP={shown:"reveal",revealed:"back"};
+
+function render(){
+  closePop();
+  const col=TAP[cur]?COLORS[S.color]:"";
+  document.body.style.background=col;
+  $("app").innerHTML=`<div class="wrap${col?" on-color":""}" ${TAP[cur]?`data-act="tap" data-kind="${TAP[cur]}" style="background:${col}"`:""}>${NOX.includes(cur)?"":`<div class="top"><button class="x" data-act="quit" aria-label="Quitter">✕</button></div>`}${screens[cur]()}</div>`;
+  requestAnimationFrame(fitAll);
+}
+function go(to){cur=to;render()}
+function fit(b){const n=b.firstElementChild;let s=+b.dataset.max;n.style.fontSize=s+"px";
+  while(s>+b.dataset.min&&(n.offsetHeight>b.clientHeight||n.offsetWidth>b.clientWidth||n.scrollWidth>n.clientWidth+1)){s-=Math.max(1,Math.round(s*.05));n.style.fontSize=s+"px"}}
+function fitW(e){e.style.fontSize="";let s=parseFloat(getComputedStyle(e).fontSize);while(s>10&&e.scrollWidth>e.clientWidth+1){s-=1;e.style.fontSize=s+"px"}}
+function fitAll(){document.querySelectorAll("[data-fit]").forEach(fit);document.querySelectorAll(".btn,h1,h2").forEach(fitW)}
+addEventListener("resize",fitAll);
+document.fonts&&document.fonts.ready.then(fitAll);
+
+/* ===== Popup unique (confirmations) ===== */
+function closePop(){clearTimeout(pt);$("pop").innerHTML=""}
+function popup(o){
+  closePop();POK=o.ok;
+  const auto=o.auto!==false;
+  $("pop").innerHTML=`<div class="ov" data-act="pclose"><div class="pbox ${o.y<innerHeight/2?"dn":"up"}${auto?" auto":""}" data-act="noop"><h2>${o.title}</h2>${o.sub?`<p class="sub">${o.sub}</p>`:""}<button class="btn${o.danger?" danger":""}" data-act="pok">${o.label}</button>${o.cancel?`<button class="btn ghost" data-act="pclose">${o.cancel}</button>`:""}</div></div>`;
+  fitAll();if(auto)pt=setTimeout(closePop,2000);
+}
+
+/* ===== Actions : un seul point d'entrée pour tous les clics ===== */
+const acts={
+  noop(){},
+  pclose:closePop,
+  pok(){const f=POK;closePop();f()},
+  go(a){go(a.dataset.to)},
+  pick(a){S.color=+a.dataset.i;render()},
+  sel(a){const i=+a.dataset.i;S.sel=S.sel===i?null:i;render()},
+  play(){if(S.sel!==null)go("shown")},
+  restart(){
+     S.topic = "";
+     S.ans = ["", "", "", "", "", ""];
+     S.cards = [];
+     S.sel = null;
+     go("topic");
+  },
+  quit(a,e){popup({y:e.clientY,title:"Quitter la partie ?",sub:"La progression sera perdue.",label:"QUITTER",cancel:"RESTER",danger:1,auto:false,ok:()=>{reset();render()}})},
+  tap(a,e){
+    if(a.dataset.kind==="reveal")popup({y:e.clientY,title:"Dévoiler la valeur ?",label:"DÉVOILER",ok:()=>go("revealed")});
+    else popup({y:e.clientY,title:"Retourner à la liste ?",label:"RETOUR À LA LISTE",ok:()=>{S.cards[S.sel].done=true;S.sel=null;const u=S.cards.filter(c=>!c.done);if(u.length===1)u[0].done=true;go("main")}});
+  },
+  done(){
+    const seen={};let bad=null;
+    S.ans.forEach((a,i)=>{const n=a.trim().toLowerCase();let m="";
+      if(!n)m="Réponse vide.";else if(n in seen)m=`Identique à la réponse ${LAB[seen[n]]}.`;else seen[n]=i;
+      $("e"+i).textContent=m;document.querySelector(`input[data-i="${i}"]`).classList.toggle("bad",!!m);
+      if(m&&bad===null)bad=i});
+    if(bad!==null){$("msg").textContent="Corrigez les champs signalés.";document.querySelector(`input[data-i="${bad}"]`).scrollIntoView({block:"center"});return}
+    const c=S.ans.map((t,i)=>({v:LAB[i],t:t.trim(),done:false}));
+    for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[c[i],c[j]]=[c[j],c[i]]}
+    S.cards=c;S.sel=null;go("pass2");
+  }
+};
+document.addEventListener("click",e=>{const a=e.target.closest("[data-act]");if(a&&acts[a.dataset.act])acts[a.dataset.act](a,e)});
+document.addEventListener("input",e=>{const t=e.target;
+  if(t.id==="topic"){S.topic=t.value;$("okTopic").disabled=!t.value.trim()}
+  else if(t.dataset.i!==undefined){S.ans[+t.dataset.i]=t.value;t.classList.remove("bad");$("e"+t.dataset.i).textContent=""}});
+
+reset();render();
+</script>
+</body>
+</html>
